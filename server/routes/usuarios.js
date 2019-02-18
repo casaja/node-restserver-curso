@@ -41,11 +41,25 @@ app.get('/usuario', verificaToken, (req, res) => {
 
 app.post('/usuario', [verificaToken, verificaAdmin_Role], (req, res) => {
 
+    let body = req.body;
+
+    let usuario = new Usuario({
+        nombre: body.nombre,
+        email: body.email,
+        password: bcrypt.hashSync(body.password, 10),
+        role: body.role
+    });
+
     usuario.save((err, usuarioDB) => {
+
+        console.log('Estoy por aqui');
+
         if (err) {
             return res.status(400).json({
                 ok: false,
-                err
+                err: {
+                    message: 'Error al crear el usuario'
+                }
             });
         }
 
